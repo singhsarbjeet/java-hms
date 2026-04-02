@@ -352,11 +352,17 @@ class DBConnection {
     private static final String DRIVER =
             "org.postgresql.Driver";
 
-    private static final String URL =
+    private static final String DEFAULT_URL =
             "jdbc:postgresql://localhost:5432/demo";
 
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "postgres";
+    private static final String DEFAULT_USER = "postgres";
+    private static final String DEFAULT_PASSWORD = "postgres";
+
+    // Returns an environment variable value or a fallback default.
+    private static String getEnvOrDefault(String key, String defaultValue) {
+        String value = System.getenv(key);
+        return value == null || value.trim().isEmpty() ? defaultValue : value.trim();
+    }
 
     // Opens a PostgreSQL database connection.
     public static Connection getConnection() throws SQLException {
@@ -370,7 +376,11 @@ class DBConnection {
             );
         }
 
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+        String url = getEnvOrDefault("HMS_DB_URL", DEFAULT_URL);
+        String user = getEnvOrDefault("HMS_DB_USER", DEFAULT_USER);
+        String password = getEnvOrDefault("HMS_DB_PASSWORD", DEFAULT_PASSWORD);
+
+        return DriverManager.getConnection(url, user, password);
     }
 }
 

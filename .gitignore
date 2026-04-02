@@ -2,6 +2,7 @@
 *.log
 *.tmp
 *.jar
+.env
 
 bin/
 build/
